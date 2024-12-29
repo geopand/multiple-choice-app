@@ -17,6 +17,7 @@ class AboutFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var db: SQLiteDatabase
     private val DB_NAME = "quiz-db"
+    private val QUESTIONS_SIZE: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,15 +34,18 @@ class AboutFragment : Fragment() {
             null,
             SQLiteDatabase.OPEN_READWRITE
         )
-        /*
+/*
         val repo = QuestionRepository(db)
-        val questions: List<Question> = repo.getQuestionsByIds(listOf(1))
+        val questions: List<Question> = repo.getQuestionsByIds(repo.getRandomQuestionIds(QUESTIONS_SIZE))
         println("\n\n\n\n\n---------------------------\n")
         for (question in  questions) {
             println(question.id)
             println(question.text)
+            question.answers.forEach {
+                println("${it.id} | ${it.text} | ${it.isCorrect} | ${it.questionId}")
+            }
         }
-        */
+ */
         return view
     }
 

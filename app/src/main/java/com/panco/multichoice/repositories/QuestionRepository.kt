@@ -6,8 +6,22 @@ import com.panco.multichoice.models.Question
 
 class QuestionRepository(private val db: SQLiteDatabase) {
 
-    fun getRandomQuestionIds() {
-
+    fun getRandomQuestionIds(limit: Int): List<Int> {
+        val query = """
+           SELECT q_id as questionId
+           FROM question
+           ORDER BY random()
+           limit $limit;
+        """
+        val cursor = db.rawQuery(query, null)
+        val randomQuestionIds = mutableListOf<Int>()
+        cursor.use {
+            while (it.moveToNext()) {
+                val questionId: Int = cursor.getInt(it.getColumnIndexOrThrow("questionId"))
+                randomQuestionIds.add(questionId)
+            }
+        }
+        return randomQuestionIds
     }
 
     // Get all questions
