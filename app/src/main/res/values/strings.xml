@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">Multiple Choice Game</string>
-    <string name="about_us">Σχετικά</string>
+    <string name="play_title">Παίξε τώρα</string>
+    <string name="about_us_nav_btn">Σχετικά</string>
+    <string name="about_us">Σχετικά με την εφαρμογή</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_name_to_enter">Εισάγετε ένα username για να ξεκινήσετε</string>
+    <string name="creator_name_title">Δημιουργός</string>
+    <string name="creator_name">Παντελιάς Γεώργιος</string>
+    <string name="creator_AM_title">Αριθμός Μητρώου</string>
+    <string name="creator_AM">mscict23047</string>
+
+    <string name="start_game">Eναρξη</string>
 </resources>

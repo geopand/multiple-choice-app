@@ -1,4 +1,5 @@
 package com.panco.multichoice.models
 
-class Questionnaire {
+class Questionnaire(val questions: List<Question>) {
+
 }

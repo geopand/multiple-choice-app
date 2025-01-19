@@ -10,4 +10,18 @@
         android:name="com.panco.multichoice.AboutFragment"
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/gameIntroFragment"
+        android:name="com.panco.multichoice.GameIntroFragment"
+        android:label="fragment_game_intro"
+        tools:layout="@layout/fragment_game_intro" >
+        <action
+            android:id="@+id/action_gameIntroFragment_to_playGameFragment"
+            app:destination="@id/playGameFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playGameFragment"
+        android:name="com.panco.multichoice.PlayGameFragment"
+        android:label="fragment_play_game"
+        tools:layout="@layout/fragment_play_game" />
 </navigation>
