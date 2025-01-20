@@ -10,11 +10,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MultipleChoiceApp"
+        android:theme="@style/Base.Theme.MultipleChoiceApp"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.MultipleChoiceApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
