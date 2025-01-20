@@ -23,5 +23,9 @@
         android:id="@+id/playGameFragment"
         android:name="com.panco.multichoice.PlayGameFragment"
         android:label="fragment_play_game"
-        tools:layout="@layout/fragment_play_game" />
+        tools:layout="@layout/fragment_play_game" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+    </fragment>
 </navigation>
