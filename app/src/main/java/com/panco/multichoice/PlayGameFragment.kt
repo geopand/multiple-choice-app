@@ -2,18 +2,14 @@ package com.panco.multichoice
 
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
-import com.panco.multichoice.databinding.FragmentAboutBinding
 import com.panco.multichoice.databinding.FragmentPlayGameBinding
 import com.panco.multichoice.models.Question
 import com.panco.multichoice.models.Questionnaire
 import com.panco.multichoice.repositories.QuestionRepository
-import com.panco.multichoice.viewModels.GameViewModel
 
 
 class PlayGameFragment : Fragment() {
@@ -22,6 +18,7 @@ class PlayGameFragment : Fragment() {
     private lateinit var db: SQLiteDatabase
     private val DB_NAME = "quiz-db"
     private val QUESTIONS_SIZE: Int = 10
+    private val isDebugMode: Boolean = true //for local testing reasons keep it true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,19 +39,27 @@ class PlayGameFragment : Fragment() {
             SQLiteDatabase.OPEN_READWRITE
         )
 
-        val repo = QuestionRepository(db)
-        val questions: List<Question> = repo.getQuestionsByIds(repo.getRandomQuestionIds(QUESTIONS_SIZE))
-        println("\n\n\n\n\n---------------------------\n") //TODO delete this
-        for (question in questions) {
-            println(question.id)
-            println(question.text)
-            question.answers.forEach {
-                println("${it.id} | ${it.text} | ${it.isCorrect} | ${it.questionId}")
+        val questionRepository = QuestionRepository(db)
+        val questions: List<Question> = questionRepository.getQuestionsByIds(questionRepository.getRandomQuestionIds(QUESTIONS_SIZE))
+        if (isDebugMode) {
+            println("\n\n\n\n\n---------------------------\n") //TODO delete this
+            for (question in questions) {
+                println(question.id)
+                println(question.text)
+                question.answers.forEach {
+                    println("${it.id} | ${it.text} | ${it.isCorrect} | ${it.questionId}")
+                }
             }
         }
 
         val questionnaire = Questionnaire(questions)
-
+        val currentPosition: Int= 0
+        val q: Question  = questionnaire.questions[currentPosition]
+        binding.tvQuestion.text = q.text
+        binding.tvOptionOne.text = q.answers[0].text
+        binding.tvOptionTwo.text = q.answers[1].text
+        binding.tvOptionThree.text = q.answers[2].text
+        binding.tvOptionFour.text = q.answers[3].text
 
         return view
     }
