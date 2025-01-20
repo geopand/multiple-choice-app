@@ -59,7 +59,6 @@ class PlayGameFragment : Fragment() {
         val questionnaire = Questionnaire(questions)
         val currentPosition: Int= 0
         val q: Question  = questionnaire.questions[currentPosition]
-        resetOptionsStyling()//todo it is not running
         binding.tvQuestion.text = q.text
         binding.tvOptionOne.text = q.answers[0].text
         binding.tvOptionTwo.text = q.answers[1].text
