@@ -28,7 +28,7 @@
                 android:layout_weight="1"
                 android:indeterminate="false"
                 android:max="10"
-                android:progress="0" />
+                android:progress="1" />
             <!--   style="@android:style/Widget.ProgressBar.Horizontal"-->
             <TextView
                 android:id="@+id/tv_progressRatio"
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="10dp"
-                android:text="0/10"
+                android:text="1/10"
                 android:textSize="14sp" />
 
         </LinearLayout>

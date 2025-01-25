@@ -62,7 +62,7 @@ class PlayGameFragment : Fragment() {
         }
 
         questionnaire = Questionnaire(questions)
-        var currentPosition: Int= 0
+        var currentPosition: Int = 1
         loadNextQuestion(currentPosition, questionnaire)
         //val q: Question  = questionnaire.questions[currentPosition]
 
@@ -84,12 +84,14 @@ class PlayGameFragment : Fragment() {
                 Toast.makeText(view.context, "Παρακαλώ επιλέξτε κάποια απάντηση", Toast.LENGTH_SHORT).show()
             } else {
                 ++currentPosition
-                if (questionnaire.questions.size == currentPosition) {
+                if (questionnaire.questions.size == currentPosition - 1) {
                     Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
                 } else {
                     selectedOption = 0
                     resetOptionsStyling()
                     loadNextQuestion(currentPosition, questionnaire)
+                    updateProgressBar(currentPosition)
+                    //todo send the number of the correct answers
                 }
             }
 
@@ -97,8 +99,13 @@ class PlayGameFragment : Fragment() {
         return view
     }
 
+    private fun updateProgressBar(position: Int) {
+        binding.progressBar.progress = position
+        binding.tvProgressRatio.text = "$position/${binding.progressBar.max}"
+    }
+
     private fun loadNextQuestion(currentQuestionNo: Int, questionnaire: Questionnaire) {
-        val q = questionnaire.questions[currentQuestionNo]
+        val q = questionnaire.questions[currentQuestionNo - 1]
         binding.tvQuestion.text = q.text
         binding.tvOptionOne.text = q.answers[0].text
         binding.tvOptionTwo.text = q.answers[1].text
