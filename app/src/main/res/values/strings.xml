@@ -15,4 +15,6 @@
     <string name="padaquiz">PADAQuiz</string>
     <string name="welcome">Καλωσήρθατε!</string>
     <string name="username">username</string>
+    <string name="submit_label">ΥΠΟΒΟΛΗ</string>
+    <string name="finish_label">ΤΕΛΟΣ</string>
 </resources>

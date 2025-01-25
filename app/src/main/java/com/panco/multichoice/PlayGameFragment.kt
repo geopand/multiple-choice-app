@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.panco.multichoice.databinding.FragmentPlayGameBinding
+import com.panco.multichoice.models.Answer
 import com.panco.multichoice.models.Question
 import com.panco.multichoice.models.Questionnaire
 import com.panco.multichoice.repositories.QuestionRepository
@@ -27,7 +28,10 @@ class PlayGameFragment : Fragment() {
     private val isDebugMode: Boolean = true //for local testing reasons keep it true
     private var selectedOption: Int = 0
     private lateinit var questionnaire: Questionnaire
+    private lateinit var currentQuestion: Question
+    private lateinit var currentAnswer: Answer
     var currentPosition: Int = 1
+    var judged: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +56,6 @@ class PlayGameFragment : Fragment() {
         val questionRepository = QuestionRepository(db)
         val questions: List<Question> = questionRepository.getQuestionsByIds(questionRepository.getRandomQuestionIds(QUESTIONS_SIZE))
         if (isDebugMode) {
-            println("\n\n\n\n\n---------------------------\n") //TODO delete this
             for (question in questions) {
                 println(question.id)
                 println(question.text)
@@ -65,7 +68,7 @@ class PlayGameFragment : Fragment() {
         questionnaire = Questionnaire(questions)
 
         loadNextQuestion(currentPosition, questionnaire)
-        //val q: Question  = questionnaire.questions[currentPosition]
+        // val q: Question  = questionnaire.questions[currentPosition]
 
 
         binding.tvOptionOne.setOnClickListener {
@@ -84,15 +87,22 @@ class PlayGameFragment : Fragment() {
             if (selectedOption == 0) {
                 Toast.makeText(view.context, "Παρακαλώ επιλέξτε κάποια απάντηση", Toast.LENGTH_SHORT).show()
             } else {
-                ++currentPosition
-                if (questionnaire.questions.size == currentPosition - 1) {
+                if (questionnaire.questions.size == currentPosition) {
+                    judgeAnswers()
                     Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
                 } else {
-                    selectedOption = 0
-                    resetOptionsStyling()
-                    loadNextQuestion(currentPosition, questionnaire)
-                    updateProgressBar(currentPosition)
-                    //todo send the number of the correct answers
+                    if (!judged) {
+                        judgeAnswers()
+                        binding.btnSubmit.text = "ΕΠΟΜΕΝΗ ΕΡΩΤΗΣΗ"
+                    } else {
+                        ++currentPosition
+                        selectedOption = 0
+                        judged = false
+                        resetOptionsStyling()
+                        loadNextQuestion(currentPosition, questionnaire)
+                        updateProgressBar(currentPosition)
+                        //todo send the number of the correct answers
+                    }
                 }
             }
 
@@ -106,13 +116,18 @@ class PlayGameFragment : Fragment() {
     }
 
     private fun loadNextQuestion(currentQuestionNo: Int, questionnaire: Questionnaire) {
-        val q = questionnaire.questions[currentQuestionNo - 1]
-        binding.tvQuestion.text = q.text
-        binding.tvOptionOne.text = q.answers[0].text
-        binding.tvOptionTwo.text = q.answers[1].text
-        binding.tvOptionThree.text = q.answers[2].text
-        binding.tvOptionFour.text = q.answers[3].text
+        currentQuestion = questionnaire.questions[currentQuestionNo - 1]
+        binding.tvQuestion.text = currentQuestion.text
+        binding.tvOptionOne.text = currentQuestion.answers[0].text
+        binding.tvOptionTwo.text = currentQuestion.answers[1].text
+        binding.tvOptionThree.text = currentQuestion.answers[2].text
+        binding.tvOptionFour.text = currentQuestion.answers[3].text
         ToolBarHelper.setToolBarTitle(this, "Ερώτηση: $currentQuestionNo")
+        if (currentPosition == questionnaire.questions.size) {
+            binding.btnSubmit.text = "ΤΕΛΟΣ"
+        } else{
+            binding.btnSubmit.text = "ΥΠΟΒΟΛΗ"
+        }
     }
 
 
@@ -133,11 +148,53 @@ class PlayGameFragment : Fragment() {
     }
 
     private fun selectOptionView(tv: TextView, selection: Int) {
+        if (judged) { //User can select an answer ONLY IF the question has not been judged
+            return
+        }
         resetOptionsStyling()
         tv.setTextColor(Color.parseColor("#363A43"))
         tv.setTypeface(tv.typeface, Typeface.BOLD)
         tv.background = view?.let { ContextCompat.getDrawable(it.context, R.drawable.option_border_bg_selected) }
         selectedOption = selection
+        currentAnswer = currentQuestion.answers[selection -1]
+    }
+
+    private fun judgeAnswers() {
+        if (currentAnswer.isCorrect) {
+            markAnswerByCorrectNess(selectedOption, R.drawable.option_border_bg_correct)
+        } else {
+            markAnswerByCorrectNess(selectedOption, R.drawable.option_border_bg_wrong)
+            for (i in currentQuestion.answers.indices) {
+                println("\n\n\n\n")
+                if (currentQuestion.answers[i].isCorrect) {
+                    println("Correct is: $i")
+                    markAnswerByCorrectNess(i + 1, R.drawable.option_border_bg_correct)
+                }
+            }
+        }
+        judged = true
+    }
+
+
+    /**
+     * answerNo: the number of the answer to paint
+     * drawbleView: the background to apply to the answer
+     */
+    private fun markAnswerByCorrectNess(answerNo:Int, drawableView: Int) {
+        when(answerNo) {
+            1 -> {
+                binding.tvOptionOne.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+            }
+            2 -> {
+                binding.tvOptionTwo.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+            }
+            3 -> {
+                binding.tvOptionThree.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+            }
+            4 -> {
+                binding.tvOptionFour.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+            }
+        }
     }
 
 //   https://www.youtube.com/watch?v=b21fiIyOW4A&t=1s&ab_channel=tutorialsEU
