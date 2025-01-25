@@ -3,6 +3,7 @@ package com.panco.multichoice.repositories
 import android.database.sqlite.SQLiteDatabase
 import com.panco.multichoice.models.Answer
 import com.panco.multichoice.models.Question
+import java.util.Collections
 
 class QuestionRepository(private val db: SQLiteDatabase) {
 
@@ -63,6 +64,7 @@ class QuestionRepository(private val db: SQLiteDatabase) {
                 if (answerId != 0) {
                     val answer = Answer(answerId, questionId, answerText, isCorrect)
                     (question.answers as MutableList<Answer>).add(answer)
+                    (question.answers as MutableList<Answer>).shuffle()
                 }
             }
             return idsToQuestions.values.toList()
