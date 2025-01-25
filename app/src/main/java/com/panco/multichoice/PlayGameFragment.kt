@@ -25,13 +25,13 @@ class PlayGameFragment : Fragment() {
     private lateinit var db: SQLiteDatabase
     private val DB_NAME = "quiz-db"
     private val QUESTIONS_SIZE: Int = 10
-    private val isDebugMode: Boolean = true //for local testing reasons keep it true
+    private val isDebugMode: Boolean = false //for local testing reasons keep it true
     private var selectedOption: Int = 0
     private lateinit var questionnaire: Questionnaire
     private lateinit var currentQuestion: Question
     private lateinit var currentAnswer: Answer
-    var currentPosition: Int = 1
-    var judged: Boolean = false
+    private var currentPosition: Int = 1
+    private var judged: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,22 +55,43 @@ class PlayGameFragment : Fragment() {
 
         val questionRepository = QuestionRepository(db)
         val questions: List<Question> = questionRepository.getQuestionsByIds(questionRepository.getRandomQuestionIds(QUESTIONS_SIZE))
-        if (isDebugMode) {
-            for (question in questions) {
-                println(question.id)
-                println(question.text)
-                question.answers.forEach {
-                    println("${it.id} | ${it.text} | ${it.isCorrect} | ${it.questionId}")
-                }
-            }
-        }
-
         questionnaire = Questionnaire(questions)
 
+        if (isDebugMode) { printAll(questions) }
+
         loadNextQuestion(currentPosition, questionnaire)
-        // val q: Question  = questionnaire.questions[currentPosition]
 
+        // set up the listeners of the options
+        setOnClickListenersForOptions()
 
+        binding.btnSubmit.setOnClickListener {
+            if (selectedOption == 0) {
+                Toast.makeText(view.context, "Παρακαλώ επιλέξτε κάποια απάντηση", Toast.LENGTH_SHORT).show()
+            } else {
+                if (questionnaire.questions.size == currentPosition) {
+                    judgeAnswersVisually()
+                    Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
+                    //todo send the number of the correct answers
+                } else {
+                    if (!judged) {
+                        judgeAnswersVisually()
+                        binding.btnSubmit.text = "ΕΠΟΜΕΝΗ ΕΡΩΤΗΣΗ"
+                    } else {
+                        ++currentPosition
+                        selectedOption = 0
+                        judged = false
+                        resetOptionsStyling()
+                        loadNextQuestion(currentPosition, questionnaire)
+                        updateProgressBar(currentPosition)
+                    }
+                }
+            }
+
+        }
+        return view
+    }
+
+    private fun setOnClickListenersForOptions() {
         binding.tvOptionOne.setOnClickListener {
             selectOptionView(binding.tvOptionOne, 1)
         }
@@ -83,31 +104,16 @@ class PlayGameFragment : Fragment() {
         binding.tvOptionFour.setOnClickListener {
             selectOptionView(binding.tvOptionFour, 4)
         }
-        binding.btnSubmit.setOnClickListener {
-            if (selectedOption == 0) {
-                Toast.makeText(view.context, "Παρακαλώ επιλέξτε κάποια απάντηση", Toast.LENGTH_SHORT).show()
-            } else {
-                if (questionnaire.questions.size == currentPosition) {
-                    judgeAnswersVisually()
-                    Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
-                } else {
-                    if (!judged) {
-                        judgeAnswersVisually()
-                        binding.btnSubmit.text = "ΕΠΟΜΕΝΗ ΕΡΩΤΗΣΗ"
-                    } else {
-                        ++currentPosition
-                        selectedOption = 0
-                        judged = false
-                        resetOptionsStyling()
-                        loadNextQuestion(currentPosition, questionnaire)
-                        updateProgressBar(currentPosition)
-                        //todo send the number of the correct answers
-                    }
-                }
-            }
+    }
 
+    private fun printAll(questions: List<Question>) {
+        for (question in questions) {
+            println(question.id)
+            println(question.text)
+            question.answers.forEach {
+                println("${it.id} | ${it.text} | ${it.isCorrect} | ${it.questionId}")
+            }
         }
-        return view
     }
 
     private fun updateProgressBar(position: Int) {
@@ -130,9 +136,7 @@ class PlayGameFragment : Fragment() {
         }
     }
 
-
-    /** Resets the options back to the default style
-     */
+    /** Resets the options back to the default style */
     private fun resetOptionsStyling() {
         val options = ArrayList<TextView>()
         options.add(0, binding.tvOptionOne)
@@ -176,7 +180,6 @@ class PlayGameFragment : Fragment() {
         }
         judged = true
     }
-
 
     /**
      * answerNo: the number of the answer to paint
