@@ -129,6 +129,7 @@ class PlayGameFragment : Fragment() {
                         updateScore()
                         isFinished = true
                         Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
+                        binding.btnSubmit.text = "ΟΛΟΚΛΗΡΩΣΗ"
                     }
                 } else {
                     if (!judged) {
@@ -188,11 +189,7 @@ class PlayGameFragment : Fragment() {
         binding.tvOptionThree.text = currentQuestion.answers[2].text
         binding.tvOptionFour.text = currentQuestion.answers[3].text
         ToolBarHelper.setToolBarTitle(this, "Ερώτηση: $currentQuestionNo")
-//        if (currentPosition == questionnaire.questions.size) {
-//            binding.btnSubmit.text = "ΤΕΛΟΣ"
-//        } else{
         binding.btnSubmit.text = "ΥΠΟΒΟΛΗ"
-//        }
     }
 
     /** Resets the options back to the default style */
