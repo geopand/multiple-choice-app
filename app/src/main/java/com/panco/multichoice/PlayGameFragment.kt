@@ -14,6 +14,7 @@ import com.panco.multichoice.databinding.FragmentPlayGameBinding
 import com.panco.multichoice.models.Question
 import com.panco.multichoice.models.Questionnaire
 import com.panco.multichoice.repositories.QuestionRepository
+import com.panco.multichoice.utils.ToolBarHelper
 
 
 class PlayGameFragment : Fragment() {
@@ -31,6 +32,7 @@ class PlayGameFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         _binding = FragmentPlayGameBinding.inflate(inflater, container, false)
         val view = binding.root
+        ToolBarHelper.setToolBarTitle(this, "")
 
         val username = PlayGameFragmentArgs.fromBundle(requireArguments()).username //get the username
 
@@ -91,7 +93,6 @@ class PlayGameFragment : Fragment() {
         options.add(3, binding.tvOptionFour)
 
         options.forEach{ option ->
-            println("Option $option")
             option.setTextColor(Color.parseColor("#7A8089"))
             option.typeface = Typeface.DEFAULT
             option.background = view?.let { ContextCompat.getDrawable(it.context, R.drawable.option_border_bg_default) }
@@ -104,5 +105,7 @@ class PlayGameFragment : Fragment() {
         tv.setTypeface(tv.typeface, Typeface.BOLD)
         tv.background = view?.let { ContextCompat.getDrawable(it.context, R.drawable.option_border_bg_selected) }
     }
+
+//   https://www.youtube.com/watch?v=b21fiIyOW4A&t=1s&ab_channel=tutorialsEU
 
 }

@@ -1,17 +1,12 @@
 package com.panco.multichoice
 
-import DatabaseUtils
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import com.panco.multichoice.databinding.FragmentAboutBinding
-import com.panco.multichoice.models.Question
-import com.panco.multichoice.repositories.QuestionRepository
+import com.panco.multichoice.utils.ToolBarHelper
 
 
 class AboutFragment : Fragment() {
@@ -27,6 +22,7 @@ class AboutFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         _binding = FragmentAboutBinding.inflate(inflater, container, false)
         val view = binding.root
+        ToolBarHelper.setToolBarTitle(this, "Σχετικά")
 
         return view
     }
