@@ -88,11 +88,11 @@ class PlayGameFragment : Fragment() {
                 Toast.makeText(view.context, "Παρακαλώ επιλέξτε κάποια απάντηση", Toast.LENGTH_SHORT).show()
             } else {
                 if (questionnaire.questions.size == currentPosition) {
-                    judgeAnswers()
+                    judgeAnswersVisually()
                     Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
                 } else {
                     if (!judged) {
-                        judgeAnswers()
+                        judgeAnswersVisually()
                         binding.btnSubmit.text = "ΕΠΟΜΕΝΗ ΕΡΩΤΗΣΗ"
                     } else {
                         ++currentPosition
@@ -159,13 +159,15 @@ class PlayGameFragment : Fragment() {
         currentAnswer = currentQuestion.answers[selection -1]
     }
 
-    private fun judgeAnswers() {
+    /**
+     * show to the user if the answer was correct and if not which is the correct answer
+     */
+    private fun judgeAnswersVisually() {
         if (currentAnswer.isCorrect) {
             markAnswerByCorrectNess(selectedOption, R.drawable.option_border_bg_correct)
         } else {
             markAnswerByCorrectNess(selectedOption, R.drawable.option_border_bg_wrong)
             for (i in currentQuestion.answers.indices) {
-                println("\n\n\n\n")
                 if (currentQuestion.answers[i].isCorrect) {
                     println("Correct is: $i")
                     markAnswerByCorrectNess(i + 1, R.drawable.option_border_bg_correct)
