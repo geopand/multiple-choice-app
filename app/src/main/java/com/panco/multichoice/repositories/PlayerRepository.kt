@@ -40,6 +40,28 @@ class PlayerRepository(private val db: SQLiteDatabase) {
         }
     }
 
+    fun getPlayerByUsername(username: String): Player? {
+        val cursor = db.query(TABLE_NAME,
+            arrayOf(COLUMN_ID, COLUMN_USERNAME),
+            "$COLUMN_USERNAME = ?",
+            arrayOf(username),
+            null, null, null
+        )
+
+        if (cursor.moveToFirst()) {
+            val player = Player(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                username = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USERNAME))
+            )
+            cursor.close()
+            return player
+        } else {
+            cursor.close()
+            return null
+        }
+    }
+
+
     // Update
     fun updatePlayer(id: Int, newUsername: String): Int {
         val values = ContentValues().apply {
