@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.panco.multichoice.databinding.FragmentPlayGameBinding
 import com.panco.multichoice.models.Question
@@ -24,6 +25,8 @@ class PlayGameFragment : Fragment() {
     private val DB_NAME = "quiz-db"
     private val QUESTIONS_SIZE: Int = 10
     private val isDebugMode: Boolean = true //for local testing reasons keep it true
+    private var selectedOption: Int = 0
+    private lateinit var questionnaire: Questionnaire
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,14 +61,11 @@ class PlayGameFragment : Fragment() {
             }
         }
 
-        val questionnaire = Questionnaire(questions)
-        val currentPosition: Int= 0
-        val q: Question  = questionnaire.questions[currentPosition]
-        binding.tvQuestion.text = q.text
-        binding.tvOptionOne.text = q.answers[0].text
-        binding.tvOptionTwo.text = q.answers[1].text
-        binding.tvOptionThree.text = q.answers[2].text
-        binding.tvOptionFour.text = q.answers[3].text
+        questionnaire = Questionnaire(questions)
+        var currentPosition: Int= 0
+        loadNextQuestion(currentPosition, questionnaire)
+        //val q: Question  = questionnaire.questions[currentPosition]
+
 
         binding.tvOptionOne.setOnClickListener {
             selectOptionView(binding.tvOptionOne, 1)
@@ -79,7 +79,31 @@ class PlayGameFragment : Fragment() {
         binding.tvOptionFour.setOnClickListener {
             selectOptionView(binding.tvOptionFour, 4)
         }
+        binding.btnSubmit.setOnClickListener {
+            if (selectedOption == 0) {
+                Toast.makeText(view.context, "Παρακαλώ επιλέξτε κάποια απάντηση", Toast.LENGTH_SHORT).show()
+            } else {
+                ++currentPosition
+                if (questionnaire.questions.size == currentPosition) {
+                    Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
+                } else {
+                    selectedOption = 0
+                    resetOptionsStyling()
+                    loadNextQuestion(currentPosition, questionnaire)
+                }
+            }
+
+        }
         return view
+    }
+
+    private fun loadNextQuestion(currentQuestionNo: Int, questionnaire: Questionnaire) {
+        val q = questionnaire.questions[currentQuestionNo]
+        binding.tvQuestion.text = q.text
+        binding.tvOptionOne.text = q.answers[0].text
+        binding.tvOptionTwo.text = q.answers[1].text
+        binding.tvOptionThree.text = q.answers[2].text
+        binding.tvOptionFour.text = q.answers[3].text
     }
 
 
@@ -99,11 +123,12 @@ class PlayGameFragment : Fragment() {
         }
     }
 
-    private fun selectOptionView(tv: TextView, selectedOption: Int) {
+    private fun selectOptionView(tv: TextView, selection: Int) {
         resetOptionsStyling()
         tv.setTextColor(Color.parseColor("#363A43"))
         tv.setTypeface(tv.typeface, Typeface.BOLD)
         tv.background = view?.let { ContextCompat.getDrawable(it.context, R.drawable.option_border_bg_selected) }
+        selectedOption = selection
     }
 
 //   https://www.youtube.com/watch?v=b21fiIyOW4A&t=1s&ab_channel=tutorialsEU
