@@ -3,7 +3,6 @@ package com.panco.multichoice.repositories
 import android.database.sqlite.SQLiteDatabase
 import com.panco.multichoice.models.Answer
 import com.panco.multichoice.models.Question
-import java.util.Collections
 
 class QuestionRepository(private val db: SQLiteDatabase) {
 
@@ -29,7 +28,6 @@ class QuestionRepository(private val db: SQLiteDatabase) {
     fun getQuestionsByIds(questionIds: List<Int>): List<Question> {
         if (questionIds.isEmpty()) return emptyList()
 
-        val questions = mutableListOf<Question>()
         val questionIdsPlaceHolders = questionIds.joinToString(",") { "?" }
 
         //fetch the questions along with their answers
