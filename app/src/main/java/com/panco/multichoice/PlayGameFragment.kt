@@ -13,8 +13,12 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.panco.multichoice.databinding.FragmentPlayGameBinding
 import com.panco.multichoice.models.Answer
+import com.panco.multichoice.models.Game
+import com.panco.multichoice.models.Player
 import com.panco.multichoice.models.Question
 import com.panco.multichoice.models.Questionnaire
+import com.panco.multichoice.repositories.GameRepository
+import com.panco.multichoice.repositories.PlayerRepository
 import com.panco.multichoice.repositories.QuestionRepository
 import com.panco.multichoice.utils.ToolBarHelper
 
@@ -32,17 +36,23 @@ class PlayGameFragment : Fragment() {
     private lateinit var currentAnswer: Answer
     private var currentPosition: Int = 1
     private var judged: Boolean = false
+    private var playerScore: Int = 0
+    private var isFinished = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentPlayGameBinding.inflate(inflater, container, false)
         val view = binding.root
         ToolBarHelper.setToolBarTitle(this, "Ερώτηση: $currentPosition")
 
-        val username = PlayGameFragmentArgs.fromBundle(requireArguments()).username //get the username
 
         //Copy database
         DatabaseUtils.copyDatabase(requireContext(), DB_NAME)
@@ -54,10 +64,49 @@ class PlayGameFragment : Fragment() {
         )
 
         val questionRepository = QuestionRepository(db)
-        val questions: List<Question> = questionRepository.getQuestionsByIds(questionRepository.getRandomQuestionIds(QUESTIONS_SIZE))
+        val playerRepo = PlayerRepository(db)
+        val gameRepo = GameRepository(db)
+
+        val username = PlayGameFragmentArgs.fromBundle(requireArguments()).username //get the username
+        val player: Player? = playerRepo.getPlayerByUsername(username)
+        var playerId: Int = -1
+        if (player == null) {
+            println("Going to add a new player with username: ${username}")
+            playerId = playerRepo.addPlayer(username).toInt()
+        } else {
+            println("Will use existing player")
+        }
+
+        var gameId: Long = -1L
+        if (playerId != -1) {
+            //create game if player exists
+            gameId = gameRepo.addGameForPlayer(playerId)
+        }
+
+        //Load game from db
+        val game: Game? = gameRepo.getGameById(gameId.toInt())
+        if (game == null) {
+            Toast.makeText(view.context, "Αποτυχία έναρξης παιχνιδιού", Toast.LENGTH_SHORT).show()
+            throw RuntimeException("Could not create game")
+        }
+
+        if (isDebugMode) {
+            if (player != null) {
+                val games: List<Game> = gameRepo.getAllGamesByPlayerId(player.id)
+                games.forEach { it ->
+                    println("gameId:${it.gameId} --playerId: ${it.playerId} ---dateStarted: ${it.dateStarted} --score: ${it.score}")
+                }
+            }
+        }
+
+        val questions: List<Question> = questionRepository.getQuestionsByIds(
+            questionRepository.getRandomQuestionIds(QUESTIONS_SIZE)
+        )
         questionnaire = Questionnaire(questions)
 
-        if (isDebugMode) { printAll(questions) }
+        if (isDebugMode) {
+            printAll(questions)
+        }
 
         loadNextQuestion(currentPosition, questionnaire)
 
@@ -66,15 +115,25 @@ class PlayGameFragment : Fragment() {
 
         binding.btnSubmit.setOnClickListener {
             if (selectedOption == 0) {
-                Toast.makeText(view.context, "Παρακαλώ επιλέξτε κάποια απάντηση", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    view.context,
+                    "Παρακαλώ επιλέξτε κάποια απάντηση",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 if (questionnaire.questions.size == currentPosition) {
-                    judgeAnswersVisually()
-                    Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
-                    //todo send the number of the correct answers
+                    if (isFinished) {
+                        gameRepo.updateGameScore(game.gameId, playerScore)
+                    } else {
+                        judgeAnswersVisually()
+                        updateScore()
+                        isFinished = true
+                        Toast.makeText(view.context, "Τέλος Παιχνιδιού", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     if (!judged) {
                         judgeAnswersVisually()
+                        updateScore()
                         binding.btnSubmit.text = "ΕΠΟΜΕΝΗ ΕΡΩΤΗΣΗ"
                     } else {
                         ++currentPosition
@@ -129,11 +188,11 @@ class PlayGameFragment : Fragment() {
         binding.tvOptionThree.text = currentQuestion.answers[2].text
         binding.tvOptionFour.text = currentQuestion.answers[3].text
         ToolBarHelper.setToolBarTitle(this, "Ερώτηση: $currentQuestionNo")
-        if (currentPosition == questionnaire.questions.size) {
-            binding.btnSubmit.text = "ΤΕΛΟΣ"
-        } else{
-            binding.btnSubmit.text = "ΥΠΟΒΟΛΗ"
-        }
+//        if (currentPosition == questionnaire.questions.size) {
+//            binding.btnSubmit.text = "ΤΕΛΟΣ"
+//        } else{
+        binding.btnSubmit.text = "ΥΠΟΒΟΛΗ"
+//        }
     }
 
     /** Resets the options back to the default style */
@@ -144,10 +203,15 @@ class PlayGameFragment : Fragment() {
         options.add(2, binding.tvOptionThree)
         options.add(3, binding.tvOptionFour)
 
-        options.forEach{ option ->
+        options.forEach { option ->
             option.setTextColor(Color.parseColor("#7A8089"))
             option.typeface = Typeface.DEFAULT
-            option.background = view?.let { ContextCompat.getDrawable(it.context, R.drawable.option_border_bg_default) }
+            option.background = view?.let {
+                ContextCompat.getDrawable(
+                    it.context,
+                    R.drawable.option_border_bg_default
+                )
+            }
         }
     }
 
@@ -158,9 +222,14 @@ class PlayGameFragment : Fragment() {
         resetOptionsStyling()
         tv.setTextColor(Color.parseColor("#363A43"))
         tv.setTypeface(tv.typeface, Typeface.BOLD)
-        tv.background = view?.let { ContextCompat.getDrawable(it.context, R.drawable.option_border_bg_selected) }
+        tv.background = view?.let {
+            ContextCompat.getDrawable(
+                it.context,
+                R.drawable.option_border_bg_selected
+            )
+        }
         selectedOption = selection
-        currentAnswer = currentQuestion.answers[selection -1]
+        currentAnswer = currentQuestion.answers[selection - 1]
     }
 
     /**
@@ -181,23 +250,36 @@ class PlayGameFragment : Fragment() {
         judged = true
     }
 
+    private fun updateScore() {
+        if (currentAnswer.isCorrect) {
+            ++playerScore
+        }
+    }
+
     /**
      * answerNo: the number of the answer to paint
      * drawbleView: the background to apply to the answer
      */
-    private fun markAnswerByCorrectNess(answerNo:Int, drawableView: Int) {
-        when(answerNo) {
+    private fun markAnswerByCorrectNess(answerNo: Int, drawableView: Int) {
+        when (answerNo) {
             1 -> {
-                binding.tvOptionOne.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+                binding.tvOptionOne.background =
+                    view?.let { ContextCompat.getDrawable(it.context, drawableView) }
             }
+
             2 -> {
-                binding.tvOptionTwo.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+                binding.tvOptionTwo.background =
+                    view?.let { ContextCompat.getDrawable(it.context, drawableView) }
             }
+
             3 -> {
-                binding.tvOptionThree.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+                binding.tvOptionThree.background =
+                    view?.let { ContextCompat.getDrawable(it.context, drawableView) }
             }
+
             4 -> {
-                binding.tvOptionFour.background = view?.let { ContextCompat.getDrawable(it.context, drawableView) }
+                binding.tvOptionFour.background =
+                    view?.let { ContextCompat.getDrawable(it.context, drawableView) }
             }
         }
     }
