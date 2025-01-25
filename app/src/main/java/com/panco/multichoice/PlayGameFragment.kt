@@ -27,6 +27,7 @@ class PlayGameFragment : Fragment() {
     private val isDebugMode: Boolean = true //for local testing reasons keep it true
     private var selectedOption: Int = 0
     private lateinit var questionnaire: Questionnaire
+    var currentPosition: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +36,7 @@ class PlayGameFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         _binding = FragmentPlayGameBinding.inflate(inflater, container, false)
         val view = binding.root
-        ToolBarHelper.setToolBarTitle(this, "")
+        ToolBarHelper.setToolBarTitle(this, "Ερώτηση: $currentPosition")
 
         val username = PlayGameFragmentArgs.fromBundle(requireArguments()).username //get the username
 
@@ -62,7 +63,7 @@ class PlayGameFragment : Fragment() {
         }
 
         questionnaire = Questionnaire(questions)
-        var currentPosition: Int = 1
+
         loadNextQuestion(currentPosition, questionnaire)
         //val q: Question  = questionnaire.questions[currentPosition]
 
@@ -111,6 +112,7 @@ class PlayGameFragment : Fragment() {
         binding.tvOptionTwo.text = q.answers[1].text
         binding.tvOptionThree.text = q.answers[2].text
         binding.tvOptionFour.text = q.answers[3].text
+        ToolBarHelper.setToolBarTitle(this, "Ερώτηση: $currentQuestionNo")
     }
 
 
