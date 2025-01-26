@@ -14,10 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/resultsTitle"
+        android:text="@string/congrats"
         android:textColor="@color/white"
-        android:textSize="25sp"
-        android:textStyle="bold" />
+        android:textSize="35sp"
+        android:textStyle="italic|bold" />
 
 
     <androidx.cardview.widget.CardView
@@ -47,6 +47,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvEarnedPoints"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -67,7 +68,7 @@
 
 
                 <Button
-                    android:id="@+id/btnStartGame"
+                    android:id="@+id/btnAcknowledgePoint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

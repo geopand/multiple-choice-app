@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import com.panco.multichoice.databinding.FragmentPlayGameBinding
 import com.panco.multichoice.models.Answer
 import com.panco.multichoice.models.Game
@@ -75,6 +76,7 @@ class PlayGameFragment : Fragment() {
             playerId = playerRepo.addPlayer(username).toInt()
         } else {
             println("Will use existing player")
+            playerId = player.id
         }
 
         var gameId: Long = -1L
@@ -124,6 +126,8 @@ class PlayGameFragment : Fragment() {
                 if (questionnaire.questions.size == currentPosition) {
                     if (isFinished) {
                         gameRepo.updateGameScore(game.gameId, playerScore)
+                        val action = PlayGameFragmentDirections.actionPlayGameFragmentToGameResultFragment(playerScore)
+                        view.findNavController().navigate(action)
                     } else {
                         judgeAnswersVisually()
                         updateScore()

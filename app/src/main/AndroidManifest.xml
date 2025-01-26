@@ -12,11 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.MultipleChoiceApp"
         tools:targetApi="31">
+<!--                    android:windowSoftInputMode="adjustResize"-->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
+
             android:theme="@style/Theme.MultipleChoiceApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -8,9 +8,9 @@ object DatabaseUtils {
         val dbPath = context.getDatabasePath(dbName)
 
         // Check if the database already exists
-//        if (dbPath.exists()) {
-//            return // Database already exists
-//        }
+        if (dbPath.exists()) {
+            return // Database already exists
+        }
 
         // Ensure the databases directory exists
         dbPath.parentFile?.mkdirs()

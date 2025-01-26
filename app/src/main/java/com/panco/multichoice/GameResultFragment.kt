@@ -1,11 +1,10 @@
 package com.panco.multichoice
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.panco.multichoice.databinding.FragmentGameIntroBinding
+import androidx.fragment.app.Fragment
 import com.panco.multichoice.databinding.FragmentGameResultBinding
 import com.panco.multichoice.utils.ToolBarHelper
 
@@ -24,6 +23,11 @@ class GameResultFragment : Fragment() {
         ToolBarHelper.setToolBarTitle(this, "Αποτελέσματα")
 
         var result = GameResultFragmentArgs.fromBundle(requireArguments()).score //get the score
+        binding.tvEarnedPoints.text = result.toString()
+
+        binding.btnAcknowledgePoint.setOnClickListener {
+        }
+        
 
         return view
     }

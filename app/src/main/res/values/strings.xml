@@ -16,8 +16,8 @@
     <string name="closeLabel">ΚΛΕΙΣΕ</string>
     <string name="padaquiz">PADAQuiz</string>
     <string name="resultsTitle">Αποτελέσματα</string>
+    <string name="congrats">Συγχαρητήρια!</string>
     <string name="welcome">Καλωσήρθατε!</string>
-    <string name="goodJob">Συγχαρητήρια!</string>
     <string name="pointsTitle">Πόντοι</string>
     <string name="scoreValue">8</string>
     <string name="username">username</string>
