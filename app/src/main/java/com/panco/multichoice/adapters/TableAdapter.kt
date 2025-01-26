@@ -46,10 +46,9 @@ class TableAdapter(private val dataSet: List<Game>) :
 
     private fun getDateTime(date: Long): String? {
         try {
-            val sdf = SimpleDateFormat("dd/MM/yyyy")
-            println("\n\ndate is: $date")
-            val netDate = Date(date * 1000)
-            return sdf.format(netDate)
+            val sdf = SimpleDateFormat("dd MMM ,yyyy HH:mm")
+            val resultdate = Date(date)
+            return sdf.format(resultdate)
         } catch (e: Exception) {
             return e.toString()
         }

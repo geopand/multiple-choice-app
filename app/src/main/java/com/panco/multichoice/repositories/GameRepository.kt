@@ -2,7 +2,10 @@ package com.panco.multichoice.repositories
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.panco.multichoice.models.Game
+import java.time.Instant
 
 class GameRepository (private val db: SQLiteDatabase) {
     companion object {
@@ -33,7 +36,7 @@ class GameRepository (private val db: SQLiteDatabase) {
         if (cursor.moveToFirst()) {
             val game = Game(
                 gameId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
-                dateStarted = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DATE_STARTED)),
+                dateStarted = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_DATE_STARTED)),
                 playerId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAYER_ID)),
                 score = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SCORE))
             )
@@ -80,7 +83,7 @@ class GameRepository (private val db: SQLiteDatabase) {
             do {
                 val game = Game(
                     gameId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
-                    dateStarted = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_DATE_STARTED)),
+                    dateStarted = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_DATE_STARTED)),
                     playerId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PLAYER_ID)),
                     score = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SCORE))
                 )
