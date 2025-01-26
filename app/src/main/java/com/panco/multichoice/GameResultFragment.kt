@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.panco.multichoice.databinding.FragmentGameResultBinding
 import com.panco.multichoice.utils.ToolBarHelper
 
@@ -16,24 +17,23 @@ class GameResultFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentGameResultBinding.inflate(inflater, container, false)
         val view = binding.root
         ToolBarHelper.setToolBarTitle(this, "Αποτελέσματα")
 
-        var result = GameResultFragmentArgs.fromBundle(requireArguments()).score //get the score
-        binding.tvEarnedPoints.text = result.toString()
+        val score = GameResultFragmentArgs.fromBundle(requireArguments()).score //get the score
+        val playerId = GameResultFragmentArgs.fromBundle(requireArguments()).playerId
+        binding.tvEarnedPoints.text = score.toString()
 
         binding.btnAcknowledgePoint.setOnClickListener {
+            val action =
+                GameResultFragmentDirections.actionGameResultFragmentToMyResultsFragment(playerId)
+            view.findNavController().navigate(action)
         }
-        
-
         return view
     }
 
-    companion object {
-
-
-    }
 }

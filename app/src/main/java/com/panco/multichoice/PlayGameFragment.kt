@@ -126,7 +126,7 @@ class PlayGameFragment : Fragment() {
                 if (questionnaire.questions.size == currentPosition) {
                     if (isFinished) {
                         gameRepo.updateGameScore(game.gameId, playerScore)
-                        val action = PlayGameFragmentDirections.actionPlayGameFragmentToGameResultFragment(playerScore)
+                        val action = PlayGameFragmentDirections.actionPlayGameFragmentToGameResultFragment(playerScore, playerId)
                         view.findNavController().navigate(action)
                     } else {
                         judgeAnswersVisually()

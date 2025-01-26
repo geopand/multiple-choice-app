@@ -1,0 +1,54 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/white"
+        android:padding="40dp"
+        app:cardCornerRadius="9dp"
+        app:cardElevation="5dp"
+        app:contentPadding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvGameId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Παιχνίδι: 45"
+                android:textColor="@color/colorPrimary"
+                android:textSize="25sp"
+                android:textStyle="italic|bold" />
+
+            <TextView
+                android:id="@+id/tvDateStarted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ημερομηνία: 25/02/2025"
+                android:textColor="@color/colorPrimaryVariant"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/tvGameScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Πόντοι: 8" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</FrameLayout>
