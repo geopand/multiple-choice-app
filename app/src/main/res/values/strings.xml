@@ -12,8 +12,14 @@
     <string name="creator_AM">mscict23047</string>
 
     <string name="start_game">Eναρξη</string>
+    <string name="οκLabel">ΟΚ</string>
+    <string name="closeLabel">ΚΛΕΙΣΕ</string>
     <string name="padaquiz">PADAQuiz</string>
+    <string name="resultsTitle">Αποτελέσματα</string>
     <string name="welcome">Καλωσήρθατε!</string>
+    <string name="goodJob">Συγχαρητήρια!</string>
+    <string name="pointsTitle">Πόντοι</string>
+    <string name="scoreValue">8</string>
     <string name="username">username</string>
     <string name="submit_label">ΥΠΟΒΟΛΗ</string>
     <string name="finish_label">ΤΕΛΟΣ</string>
