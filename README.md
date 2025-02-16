@@ -9,7 +9,7 @@ This is a project done for the related course at University of West Attica Maste
 **Καθηγητής**: Χρήστος Τρούσσας
 
 ## Εργασία «Multiple Choice Test»
-![bg right:35% fit ](pada-logo.png)
+<img src="https://github.com/geopand/multiple-choice-app/blob/main/presentation/pada-logo.png">
 
 <br> <br>
 
@@ -39,7 +39,6 @@ This is a project done for the related course at University of West Attica Maste
 ---
 ### Σχήμα της βάσης
 
-![bg right:35% fit](quiz-db.png)
 <img src="https://github.com/geopand/multiple-choice-app/blob/main/presentation/quiz-db.png">
 
 
