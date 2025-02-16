@@ -285,6 +285,5 @@ class PlayGameFragment : Fragment() {
         }
     }
 
-//   https://www.youtube.com/watch?v=b21fiIyOW4A&t=1s&ab_channel=tutorialsEU
 
 }
